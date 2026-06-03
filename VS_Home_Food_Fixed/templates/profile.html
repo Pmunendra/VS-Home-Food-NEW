@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — VS Home Food{% endblock %}
+
+{% block content %}
+<div class="page-hero small">
+    <div class="page-hero-content">
+        <h1>👤 My Profile</h1>
+        <p>Manage your account details</p>
+    </div>
+</div>
+
+<section style="padding:60px 0;background:var(--cream);">
+    <div class="section-container" style="max-width:600px;margin:0 auto;padding:0 24px;">
+        <div style="background:#fff;border-radius:20px;padding:40px;box-shadow:0 8px 40px rgba(0,0,0,0.08);border:1px solid var(--border);">
+            <div style="text-align:center;margin-bottom:32px;">
+                <div style="width:80px;height:80px;background:var(--orange);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;margin:0 auto 16px;">
+                    {{ user.first_name[0]|upper }}
+                </div>
+                <h2 style="font-size:24px;margin-bottom:4px;">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p style="color:#888;font-size:14px;">Member since {{ user.created_at.strftime('%B %Y') }}</p>
+            </div>
+
+            <div style="display:grid;gap:20px;">
+                <div style="background:#FDF6EE;border-radius:12px;padding:20px;">
+                    <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--orange);font-weight:700;display:block;margin-bottom:8px;">📧 Email Address</label>
+                    <span style="font-size:16px;font-weight:500;">{{ user.email }}</span>
+                </div>
+                <div style="background:#FDF6EE;border-radius:12px;padding:20px;">
+                    <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--orange);font-weight:700;display:block;margin-bottom:8px;">📞 Phone Number</label>
+                    <span style="font-size:16px;font-weight:500;">{{ user.phone }}</span>
+                </div>
+                <div style="background:#FDF6EE;border-radius:12px;padding:20px;">
+                    <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--orange);font-weight:700;display:block;margin-bottom:8px;">📦 Total Orders</label>
+                    <span style="font-size:16px;font-weight:500;">{{ user.orders|length }} orders placed</span>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;">
+                <a href="{{ url_for('my_orders') }}" class="btn-primary" style="flex:1;text-align:center;min-width:140px;">📦 My Orders</a>
+                <button onclick="logoutUser()" style="flex:1;min-width:140px;padding:14px 28px;border-radius:50px;font-weight:600;font-size:15px;border:2px solid #DC2626;color:#DC2626;background:none;cursor:pointer;">🚪 Logout</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% block title %}VS Home Food — Fresh Homemade Food Delivered{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-container">
+        <div class="hero-content reveal">
+            <div class="hero-badge">🌿 100% Homemade &amp; Fresh</div>
+            <h1 class="hero-title">
+                Taste the Love of<br>
+                <span class="hero-highlight">VS Home Food</span>
+            </h1>
+            <p class="hero-subtitle">Authentic Telugu homemade food crafted with traditional recipes. Fresh ingredients, no preservatives, delivered hot to your door.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('menu') }}" class="btn-primary hero-btn">Order Now 🍽️</a>
+                <a href="#categories" class="btn-outline hero-btn">Explore Menu</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><strong>500+</strong><span>Happy Customers</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><strong>50+</strong><span>Dishes</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><strong>4.9★</strong><span>Rating</span></div>
+            </div>
+        </div>
+        <div class="hero-visual reveal-right">
+            <div class="hero-food-card floating">
+                <div class="food-emoji-big">🍛</div>
+                <div class="hero-card-info">
+                    <span>Hyderabadi Biryani</span>
+                    <strong>₹280</strong>
+                </div>
+            </div>
+            <div class="hero-food-card floating delay-1">
+                <div class="food-emoji-big">🍮</div>
+                <div class="hero-card-info">
+                    <span>Double Ka Meetha</span>
+                    <strong>₹120</strong>
+                </div>
+            </div>
+            <div class="hero-food-card floating delay-2">
+                <div class="food-emoji-big">🥘</div>
+                <div class="hero-card-info">
+                    <span>Gongura Mutton</span>
+                    <strong>₹320</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Search Bar -->
+    <div class="hero-search reveal">
+        <div class="hero-search-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="heroSearchInput" placeholder="Search biryani, curry, sweets, pickles..." autocomplete="off">
+            <button class="hero-search-btn">Search</button>
+        </div>
+        <div class="hero-search-tags">
+            <span onclick="searchTag('Biryani')">🍛 Biryani</span>
+            <span onclick="searchTag('Pickle')">🫙 Pickles</span>
+            <span onclick="searchTag('Sweets')">🍮 Sweets</span>
+            <span onclick="searchTag('Curry')">🥘 Curry</span>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIES SECTION -->
+<section class="categories-section" id="categories">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <p class="section-label">Browse by</p>
+            <h2 class="section-title">Food Categories</h2>
+        </div>
+        <div class="categories-grid">
+            <a href="{{ url_for('menu') }}?cat=biryani" class="category-card reveal">
+                <div class="cat-icon">🍛</div>
+                <h3>Biryanis</h3>
+                <span>12 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=curry" class="category-card reveal">
+                <div class="cat-icon">🥘</div>
+                <h3>Curries</h3>
+                <span>18 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=pickles" class="category-card reveal">
+                <div class="cat-icon">🫙</div>
+                <h3>Pickles</h3>
+                <span>15 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=sweets" class="category-card reveal">
+                <div class="cat-icon">🍮</div>
+                <h3>Sweets</h3>
+                <span>10 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=snacks" class="category-card reveal">
+                <div class="cat-icon">🥐</div>
+                <h3>Snacks</h3>
+                <span>8 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=rice" class="category-card reveal">
+                <div class="cat-icon">🍚</div>
+                <h3>Rice Items</h3>
+                <span>9 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=dals" class="category-card reveal">
+                <div class="cat-icon">🫕</div>
+                <h3>Dals & Pappu</h3>
+                <span>7 items</span>
+            </a>
+            <a href="{{ url_for('menu') }}?cat=tiffins" class="category-card reveal">
+                <div class="cat-icon">🫓</div>
+                <h3>Tiffins</h3>
+                <span>11 items</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- POPULAR FOODS -->
+<section class="products-section" id="popular">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <p class="section-label">Most Loved</p>
+            <h2 class="section-title">Popular Dishes</h2>
+        </div>
+        <div class="products-grid" id="popularGrid">
+            <!-- JS Renders these -->
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+        </div>
+        <div class="section-cta reveal">
+            <a href="{{ url_for('menu') }}" class="btn-outline">View Full Menu →</a>
+        </div>
+    </div>
+</section>
+
+<!-- OFFER BANNER -->
+<section class="offer-banner" id="offers">
+    <div class="offer-container reveal">
+        <div class="offer-content">
+            <div class="offer-badge">🔥 Limited Time</div>
+            <h2>Get 20% OFF on your <span>First Order!</span></h2>
+            <p>Use code <strong>FIRST20</strong> at checkout. Fresh homemade food at your best price!</p>
+            <div class="offer-actions">
+                <a href="{{ url_for('menu') }}" class="btn-primary">Order Now</a>
+                <div class="offer-code-box">
+                    <span>FIRST20</span>
+                    <button onclick="copyCode('FIRST20')">Copy</button>
+                </div>
+            </div>
+        </div>
+        <div class="offer-visual">
+            <div class="offer-emoji">🎉</div>
+        </div>
+    </div>
+</section>
+
+<!-- BEST SELLERS -->
+<section class="products-section bestsellers-section">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <p class="section-label">Top Picks</p>
+            <h2 class="section-title">Best Sellers</h2>
+        </div>
+        <div class="products-grid" id="bestsellersGrid">
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+            <div class="product-skeleton"></div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <p class="section-label">What Our</p>
+            <h2 class="section-title">Customers Say 💬</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal">
+                <div class="stars">★★★★★</div>
+                <p>"The Hyderabadi Biryani tastes exactly like my mother's cooking. Absolutely love it! Will definitely order again."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">P</div>
+                    <div><strong>Priya Reddy</strong><span>Hyderabad</span></div>
+                </div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="stars">★★★★★</div>
+                <p>"Gongura pickle is exceptional! Authentic taste, perfect sourness. Reminds me of home. Fast delivery too."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">R</div>
+                    <div><strong>Ravi Kumar</strong><span>Bangalore</span></div>
+                </div>
+            </div>
+            <div class="testimonial-card reveal">
+                <div class="stars">★★★★★</div>
+                <p>"Double Ka Meetha was outstanding! Perfectly sweet and rich. The packaging kept it fresh. Highly recommended!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">S</div>
+                    <div><strong>Sunitha Rao</strong><span>Chennai</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DOWNLOAD APP SECTION -->
+<section class="app-section">
+    <div class="app-container reveal">
+        <div class="app-content">
+            <div class="app-badge">📱 Mobile App</div>
+            <h2>Order Faster with Our App!</h2>
+            <p>Get exclusive app-only discounts, track your order live, and reorder your favourites in one tap.</p>
+            <div class="app-buttons">
+                <a href="#" class="app-store-btn">
+                    <span class="app-store-icon">🍎</span>
+                    <div><small>Download on</small><strong>App Store</strong></div>
+                </a>
+                <a href="#" class="app-store-btn">
+                    <span class="app-store-icon">▶️</span>
+                    <div><small>Get it on</small><strong>Google Play</strong></div>
+                </a>
+            </div>
+        </div>
+        <div class="app-visual">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="phone-content">
+                        <div class="phone-logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="VS Home Foods" class="nav-logo-img"> VS Home Food </div>
+                        <div class="phone-item">🍛 Biryani — ₹280</div>
+                        <div class="phone-item">🥘 Gongura Mutton — ₹320</div>
+                        <div class="phone-btn">Add to Cart ✓</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchTag(tag) {
+    window.location.href = "{{ url_for('menu') }}?search=" + tag;
+}
+function copyCode(code) {
+    navigator.clipboard.writeText(code);
+    alert('Coupon code copied: ' + code);
+}
+
+// Load popular products on home page from DB
+async function loadHomeProducts() {
+    try {
+        const res  = await fetch('/api/products');
+        const data = await res.json();
+        if (!data.success || !data.products.length) return;
+
+        // Show first 4 products in popular grid
+        const popular = document.getElementById('popularGrid');
+        if (popular) {
+            popular.innerHTML = data.products.slice(0, 4).map(p => renderProductCard(p)).join('');
+        }
+        // Show next 4 in bestsellers
+        const best = document.getElementById('bestsellersGrid');
+        if (best) {
+            const badgeProd = data.products.filter(p => p.badge) || data.products.slice(4, 8);
+            best.innerHTML = badgeProd.slice(0, 4).map(p => renderProductCard(p)).join('');
+        }
+        updateCartUI();
+    } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', loadHomeProducts);
+</script>
+{% endblock %}

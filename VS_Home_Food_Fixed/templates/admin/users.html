@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Users — Admin | VS Home Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Variables ── */
+:root {
+    --orange: #E8471A;
+    --orange-dark: #C93A12;
+    --cream: #FDF6EE;
+    --text-dark: #1A1A1A;
+    --text-light: #888;
+    --border: #E8D5C0;
+    --sidebar-bg: #1A1A1A;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --radius: 14px;
+}
+
+/* ── Base ── */
+html, body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F5F5F5;
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+/* FIX: img must have max-width so the 1254×1254px logo.png
+   does NOT render at full native size and cover the page */
+img { max-width: 100%; height: auto; }
+
+/* ── Layout ── */
+body { display: flex; }
+
+/* ── Sidebar ── */
+.sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    color: white;
+    flex-shrink: 0;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* ── Sidebar Logo — FIXED: constrain the logo image explicitly ── */
+.sidebar-logo {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.sidebar-logo-img {
+    /* Explicit size constraints — prevents 1254px logo from blowing up */
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+.sidebar-logo-text {
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-logo-text .logo-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--orange);
+    font-family: 'Playfair Display', serif;
+    white-space: nowrap;
+}
+.sidebar-logo-text .logo-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 1px;
+}
+
+/* ── Sidebar Nav ── */
+.sidebar-nav { padding: 12px 0; flex: 1; }
+.nav-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.3);
+    padding: 0 20px;
+    margin: 14px 0 4px;
+}
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px;
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.sidebar-link:hover,
+.sidebar-link.active {
+    color: white;
+    background: rgba(255,255,255,0.06);
+    border-left-color: var(--orange);
+}
+.sidebar-link.danger { color: #EF4444; }
+.sidebar-link.danger:hover { background: rgba(239,68,68,0.08); border-left-color: #EF4444; }
+
+/* ── Main Content ── */
+.main {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0; /* prevents overflow */
+}
+
+/* ── Top Bar ── */
+.topbar {
+    background: white;
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.topbar-title { font-size: 18px; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-badge {
+    background: rgba(232,71,26,0.1);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+/* ── Page Content ── */
+.content { padding: 28px; }
+.page-heading {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Table Card ── */
+.table-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+.table-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.table-card-header h3 { font-size: 15px; font-weight: 600; }
+.table-scroll { overflow-x: auto; }
+
+/* ── Table ── */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+    background: #F9F5F0;
+    padding: 12px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+tbody td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #F5F0EB;
+    font-size: 13px;
+    vertical-align: middle;
+}
+tbody tr:last-child td { border: none; }
+tbody tr:hover td { background: #FFFAF5; }
+
+/* ── User Avatar ── */
+.user-avatar {
+    width: 34px;
+    height: 34px;
+    background: var(--orange);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-name { font-weight: 600; font-size: 13px; }
+.order-count {
+    font-weight: 700;
+    color: var(--orange);
+    font-size: 13px;
+}
+.date-cell { color: var(--text-light); font-size: 12px; }
+.email-cell { color: var(--text-light); }
+
+/* ── Empty State ── */
+.empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-light);
+}
+.empty-state span { font-size: 48px; display: block; margin-bottom: 12px; }
+.empty-state p { font-size: 15px; }
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        position: fixed;
+        z-index: 999;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+    }
+}
+.menu-btn {
+    display: none;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1A1A1A;
+}
+
+@media (max-width: 768px) {
+    .menu-btn {
+        display: block;
+    }
+}
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: 0.3s ease;
+        position: fixed;
+        z-index: 999;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+    }
+}
+@media (max-width:768px){
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:0.3s ease;
+    z-index:999;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .menu-btn{
+    display:block;
+    font-size:22px;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+ 
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <!-- FIX: explicit width/height/object-fit on the img tag as well,
+             double-protection against the 1254px native size rendering -->
+         <img src="{{ url_for('static', filename='images/logo.png') }}"
+             width="36" height="36"
+             class="sidebar-logo-img">
+
+        <div class="sidebar-logo-text">
+            <span class="logo-name">VS Home Food</span>
+            <span class="logo-sub">Admin Panel</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main</div>
+        <a href="/admin/dashboard" class="sidebar-link">📊 Dashboard</a>
+        <a href="/admin/orders"    class="sidebar-link">📦 All Orders</a>
+        <a href="/admin/products"  class="sidebar-link">🍛 Products</a>
+        <a href="/admin/users"     class="sidebar-link active">👥 Users</a>
+        <div class="nav-label">Quick</div>
+        <a href="/"            class="sidebar-link">🏠 View Website</a>
+        <a href="/admin/logout" class="sidebar-link danger">🚪 Logout</a>
+    </nav>
+</aside>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════════ -->
+<div class="main">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <span class="topbar-title">👥 Users</span>
+        <div class="topbar-right">
+            <span class="topbar-badge">{{ users|length }} total</span>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <h1 class="page-heading">Registered Users</h1>
+
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3>All Users ({{ users|length }})</h3>
+            </div>
+
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Orders</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td style="color:var(--text-light);">{{ loop.index }}</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">{{ u.first_name[0]|upper }}</div>
+                                    <span class="user-name">{{ u.first_name }} {{ u.last_name }}</span>
+                                </div>
+                            </td>
+                            <td class="email-cell">{{ u.email }}</td>
+                            <td>{{ u.phone }}</td>
+                            <td class="order-count">{{ u.orders|length }}</td>
+                            <td class="date-cell">{{ u.created_at.strftime('%d %b %Y') }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <span>👤</span>
+                                    <p>No users registered yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- /table-scroll -->
+        </div><!-- /table-card -->
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+}
+</script>
+<script>
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+
+// close on outside click
+document.addEventListener('click', function(e){
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.querySelector('.menu-btn');
+
+  if(sidebar.classList.contains('open')){
+    if(!sidebar.contains(e.target) && !btn.contains(e.target)){
+      sidebar.classList.remove('open');
+    }
+  }
+});
+
+// close when clicking menu link
+document.querySelectorAll('.sidebar-link').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

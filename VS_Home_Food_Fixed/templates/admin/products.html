@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — Admin | VS Home Food</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#E8471A;--cream:#FDF6EE;--border:#E8D5C0;--radius:14px;--sidebar-bg:#1A1A1A;}
+body{font-family:'DM Sans',sans-serif;background:#F5F5F5;color:#1A1A1A;display:flex;min-height:100vh}
+/* Sidebar */
+.sidebar{width:240px;background:var(--sidebar-bg);color:white;flex-shrink:0;position:fixed;height:100vh;display:flex;flex-direction:column;overflow-y:auto;z-index:100;}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-logo .logo-name{font-size:17px;font-weight:700;color:var(--orange);}
+.sidebar-logo .logo-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.sidebar-nav{padding:16px 0;flex:1;}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.3);padding:0 20px;margin:16px 0 6px;}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,0.65);font-size:14px;font-weight:500;text-decoration:none;transition:all 0.2s;border-left:3px solid transparent;}
+.sidebar-link:hover,.sidebar-link.active{color:white;background:rgba(255,255,255,0.06);border-left-color:var(--orange);}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);font-size:11px;color:rgba(255,255,255,0.3);}
+/* Main */
+.main{margin-left:240px;flex:1;min-height:100vh;}
+.topbar{background:white;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:18px;font-weight:600;}
+.content{padding:28px;}
+/* Buttons */
+.btn{padding:10px 22px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-orange{background:var(--orange);color:white;}.btn-orange:hover{background:#C93A12;}
+.btn-outline{background:white;color:#555;border:1px solid var(--border);}.btn-outline:hover{border-color:var(--orange);color:var(--orange);}
+.btn-sm{padding:6px 14px;font-size:12px;border-radius:50px;cursor:pointer;border:none;font-weight:600;}
+.btn-edit{background:#EFF6FF;color:#2563EB;}.btn-edit:hover{background:#DBEAFE;}
+.btn-delete{background:#FEE2E2;color:#DC2626;}.btn-delete:hover{background:#FCA5A5;}
+.btn-toggle-stock{background:#D1FAE5;color:#059669;font-size:11px;}.btn-toggle-stock.oos{background:#FEE2E2;color:#DC2626;}
+/* Products grid */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
+.product-card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid var(--border);transition:box-shadow 0.2s;}
+.product-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.1);}
+.product-card-img{height:130px;display:flex;align-items:center;justify-content:center;background:var(--cream);position:relative;overflow:hidden;}
+.product-card-img img{width:100%;height:100%;object-fit:cover;}
+.product-card-img .emoji-fallback{font-size:56px;}
+.oos-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;}
+.oos-badge{background:#DC2626;color:white;font-size:12px;font-weight:700;padding:5px 14px;border-radius:50px;}
+.product-card-body{padding:14px;}
+.product-card-cat{font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.product-card-name{font-weight:700;font-size:15px;margin-bottom:6px;}
+.product-card-price{font-size:18px;font-weight:700;color:var(--orange);margin-bottom:10px;}
+.product-card-variants{font-size:12px;color:#777;margin-bottom:10px;}
+.product-card-actions{display:flex;gap:6px;flex-wrap:wrap;}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:none;align-items:flex-start;justify-content:center;backdrop-filter:blur(4px);padding:40px 16px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:var(--radius);padding:32px;width:100%;max-width:600px;position:relative;margin:auto;}
+.modal h3{margin-bottom:22px;font-size:20px;font-weight:700;}
+.modal-close{position:absolute;top:16px;right:20px;font-size:22px;cursor:pointer;color:#888;background:none;border:none;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{font-size:13px;font-weight:600;color:#444;}
+.form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;transition:border-color 0.2s;width:100%;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--orange);}
+.form-group textarea{resize:vertical;min-height:80px;}
+/* Variants */
+.variants-container{border:1.5px dashed var(--border);border-radius:10px;padding:14px;background:#FFFAF5;}
+.variant-row{display:flex;gap:10px;align-items:center;margin-bottom:8px;}
+.variant-row input{flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;}
+.variant-row input:focus{outline:none;border-color:var(--orange);}
+.remove-variant{background:#FEE2E2;color:#DC2626;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:14px;flex-shrink:0;}
+.add-variant-btn{background:none;border:1.5px dashed var(--orange);color:var(--orange);padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;margin-top:4px;}
+/* Image preview */
+.img-preview{margin-top:8px;border-radius:10px;overflow:hidden;display:none;max-height:120px;}
+.img-preview img{width:100%;object-fit:cover;border-radius:10px;}
+/* Save button */
+.save-btn{width:100%;padding:14px;background:var(--orange);color:white;border:none;border-radius:50px;font-weight:700;font-size:15px;cursor:pointer;margin-top:20px;}
+.save-btn:hover{background:#C93A12;}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#1A1A1A;color:white;padding:12px 24px;border-radius:50px;font-size:14px;font-weight:600;opacity:0;transform:translateY(20px);transition:all 0.3s;z-index:9999;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.success{background:#059669;}
+.toast.error{background:#DC2626;}
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:#888;}
+.empty-state .icon{font-size:56px;margin-bottom:16px;}
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform 0.3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .form-grid{grid-template-columns:1fr;}
+  .products-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  .topbar{padding:0 16px;}
+  .content{padding:16px;}
+}
+/* =========================
+   FINAL MOBILE OVERFLOW FIX
+========================= */
+
+@media (max-width: 768px){
+
+  body{
+    display:block !important;
+    overflow-x:hidden !important;
+  }
+
+  /* Sidebar hidden by default */
+  .sidebar{
+    position:fixed !important;
+    left:0;
+    top:0;
+    width:260px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:0.3s ease;
+    z-index:9999;
+  }
+
+  /* Sidebar open state */
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  /* Main full width */
+  .main{
+    margin-left:0 !important;
+    width:100% !important;
+  }
+
+  .topbar{
+    padding:0 12px !important;
+  }
+
+  .content{
+    padding:12px !important;
+  }
+
+  /* GRID FIX (IMPORTANT PART) */
+  .products-grid{
+    grid-template-columns:repeat(2, 1fr) !important;
+    gap:12px !important;
+  }
+
+  .product-card{
+    min-width:0 !important;
+  }
+
+  .product-card-img{
+    height:100px;
+  }
+
+  .product-card-name{
+    font-size:13px;
+  }
+
+  .product-card-price{
+    font-size:14px;
+  }
+
+  /* Buttons stacked */
+  .product-card-actions{
+    flex-direction:column;
+  }
+
+  .btn-sm{
+    width:100%;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 480px){
+  .products-grid{
+    grid-template-columns:1fr !important;
+  }
+}
+@media (max-width:768px){
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:0.3s ease;
+    z-index:999;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .menu-btn{
+    display:block;
+    font-size:22px;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}"
+             width="36" height="36"
+             class="sidebar-logo-img">
+
+        <div class="sidebar-logo-text">
+            <span class="logo-name">VS Home Food</span>
+            <span class="logo-sub">Admin Panel</span>
+        </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="/admin/dashboard" class="sidebar-link">📊 Dashboard</a>
+    <a href="/admin/orders" class="sidebar-link">📦 Orders</a>
+    <a href="/admin/products" class="sidebar-link active">🍛 Products</a>
+    <a href="/admin/users" class="sidebar-link">👥 Users</a>
+    <div class="nav-label">Quick</div>
+    <a href="/" class="sidebar-link">🏠 View Website</a>
+    <a href="/admin/logout" class="sidebar-link" style="color:#EF4444;">🚪 Logout</a>
+  </nav>
+  <div class="sidebar-footer">VS Home Food Admin © 2024</div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+   <div class="topbar">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <span class="topbar-title">🍛 Products</span>
+</div>
+    <button class="btn btn-orange" onclick="openAddModal()">+ Add New Product</button>
+  </div>
+  <div class="content">
+    {% if products %}
+    <div class="products-grid">
+      {% for p in products %}
+      <div class="product-card" id="card-{{ p.id }}">
+        <div class="product-card-img">
+          {% if p.image_file %}
+            <img src="{{ url_for('static', filename='images/products/' + p.image_file) }}" alt="{{ p.name }}">
+          {% else %}
+            <span class="emoji-fallback">{{ p.emoji }}</span>
+          {% endif %}
+          {% if p.status == 'out_of_stock' %}
+          <div class="oos-overlay"><span class="oos-badge">Out of Stock</span></div>
+          {% endif %}
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-cat">{{ p.category }}</div>
+          <div class="product-card-name">{{ p.name }}</div>
+          <div class="product-card-price">₹{{ p.price|int }}</div>
+          {% if p.get_variants() %}
+          <div class="product-card-variants">
+            {% for v in p.get_variants() %}{{ v.label }}: ₹{{ v.price }}{% if not loop.last %} | {% endif %}{% endfor %}
+          </div>
+          {% endif %}
+          <div class="product-card-actions">
+            <button class="btn-sm btn-edit" onclick="openEditModal({{ p.to_dict()|tojson }})">✏️ Edit</button>
+            <button class="btn-sm btn-delete" onclick="deleteProduct({{ p.id }}, '{{ p.name }}')">🗑️ Delete</button>
+            <button class="btn-sm btn-toggle-stock {% if p.status == 'out_of_stock' %}oos{% endif %}"
+              id="stock-btn-{{ p.id }}"
+              onclick="toggleStatus({{ p.id }}, '{{ p.status }}')">
+              {% if p.status == 'in_stock' %}✅ In Stock{% else %}❌ Out of Stock{% endif %}
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">🍱</div>
+      <h3>No products yet</h3>
+      <p style="margin-top:8px;">Click "+ Add New Product" to get started</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Add / Edit Product Modal -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modalTitle">Add New Product</h3>
+    <input type="hidden" id="editProductId" value="">
+
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Product Name *</label>
+        <input type="text" id="pName" placeholder="e.g. Mango Pickle">
+      </div>
+      <div class="form-group full">
+        <label>Description</label>
+        <textarea id="pDesc" placeholder="Describe your product..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="pCategory">
+          <option value="biryani">🍛 Biryani</option>
+          <option value="curry">🥘 Curry</option>
+          <option value="pickles">🫙 Pickles</option>
+          <option value="sweets">🍮 Sweets</option>
+          <option value="snacks">🥐 Snacks</option>
+          <option value="rice">🍚 Rice</option>
+          <option value="tiffins">🫓 Tiffins</option>
+          <option value="dals">🫕 Dals</option>
+          <option value="meals">🍃 Meals</option>
+          <option value="breakfast">☕ Breakfast</option>
+          <option value="general">📦 General</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Emoji (icon)</label>
+        <input type="text" id="pEmoji" placeholder="🍱" maxlength="5">
+      </div>
+      <div class="form-group">
+        <label>Base Price (₹) *</label>
+        <input type="number" id="pPrice" placeholder="0" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Quantity (stock)</label>
+        <input type="number" id="pQuantity" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="pStatus">
+          <option value="in_stock">✅ In Stock</option>
+          <option value="out_of_stock">❌ Out of Stock</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Badge (optional)</label>
+        <input type="text" id="pBadge" placeholder="e.g. Bestseller">
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="pIsVeg">
+          <option value="true">🌿 Vegetarian</option>
+          <option value="false">🍗 Non-Vegetarian</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Product Image</label>
+        <input type="file" id="pImage" accept="image/*" onchange="previewImage(this)">
+        <div class="img-preview" id="imgPreview"><img id="imgPreviewEl" src="" alt="Preview"></div>
+      </div>
+
+      <!-- Variants -->
+      <div class="form-group full">
+        <label>Quantity Variants & Prices (e.g. 250g = ₹120)</label>
+        <div class="variants-container">
+          <div id="variantsList"></div>
+          <button type="button" class="add-variant-btn" onclick="addVariantRow()">+ Add Variant</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="save-btn" id="saveBtn" onclick="saveProduct()">💾 Save Product</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let editMode = false;
+
+// ── Open Add Modal ──────────────────────────────────────────
+function openAddModal() {
+  editMode = false;
+  document.getElementById('modalTitle').textContent = 'Add New Product';
+  document.getElementById('editProductId').value = '';
+  clearForm();
+  addVariantRow(); // start with one empty variant
+  document.getElementById('productModal').classList.add('open');
+}
+
+// ── Open Edit Modal ─────────────────────────────────────────
+function openEditModal(product) {
+  editMode = true;
+  document.getElementById('modalTitle').textContent = 'Edit Product';
+  document.getElementById('editProductId').value = product.id;
+
+  document.getElementById('pName').value     = product.name || '';
+  document.getElementById('pDesc').value     = product.description || '';
+  document.getElementById('pCategory').value = product.category || 'general';
+  document.getElementById('pEmoji').value    = product.emoji || '';
+  document.getElementById('pPrice').value    = product.price || '';
+  document.getElementById('pQuantity').value = product.quantity ?? 0;
+  document.getElementById('pStatus').value   = product.status || 'in_stock';
+  document.getElementById('pBadge').value    = product.badge || '';
+  document.getElementById('pIsVeg').value    = product.is_veg ? 'true' : 'false';
+
+  // Render variants
+  const list = document.getElementById('variantsList');
+  list.innerHTML = '';
+  const variants = product.variants || [];
+  if (variants.length === 0) {
+    addVariantRow();
+  } else {
+    variants.forEach(v => addVariantRow(v.label, v.price));
+  }
+
+  document.getElementById('productModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+}
+
+function clearForm() {
+  ['pName','pDesc','pEmoji','pPrice','pQuantity','pBadge'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pCategory').value = 'general';
+  document.getElementById('pStatus').value   = 'in_stock';
+  document.getElementById('pIsVeg').value    = 'true';
+  document.getElementById('pImage').value    = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('variantsList').innerHTML = '';
+}
+
+// ── Variants ────────────────────────────────────────────────
+function addVariantRow(label='', price='') {
+  const row = document.createElement('div');
+  row.className = 'variant-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Label (e.g. 250g)" value="${label}" class="variant-label">
+    <input type="number" placeholder="Price (₹)" value="${price}" class="variant-price" min="0">
+    <button type="button" class="remove-variant" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('variantsList').appendChild(row);
+}
+
+function collectVariants() {
+  return [...document.querySelectorAll('.variant-row')].map(row => ({
+    label: row.querySelector('.variant-label').value.trim(),
+    price: parseFloat(row.querySelector('.variant-price').value) || 0,
+  })).filter(v => v.label);
+}
+
+// ── Image Preview ───────────────────────────────────────────
+function previewImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('imgPreviewEl').src = e.target.result;
+      document.getElementById('imgPreview').style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ── Save Product ────────────────────────────────────────────
+async function saveProduct() {
+  const name = document.getElementById('pName').value.trim();
+  if (!name) { showToast('Product name is required!', 'error'); return; }
+
+  const price = parseFloat(document.getElementById('pPrice').value);
+  if (!price || price <= 0) { showToast('Enter a valid price!', 'error'); return; }
+
+  const variants = collectVariants();
+  const formData = new FormData();
+  formData.append('name',        name);
+  formData.append('description', document.getElementById('pDesc').value.trim());
+  formData.append('category',    document.getElementById('pCategory').value);
+  formData.append('emoji',       document.getElementById('pEmoji').value.trim() || '🍱');
+  formData.append('price',       price);
+  formData.append('quantity',    parseInt(document.getElementById('pQuantity').value) || 0);
+  formData.append('status',      document.getElementById('pStatus').value);
+  formData.append('badge',       document.getElementById('pBadge').value.trim());
+  formData.append('is_veg',      document.getElementById('pIsVeg').value);
+  formData.append('variants',    JSON.stringify(variants));
+
+  const imageFile = document.getElementById('pImage').files[0];
+  if (imageFile) formData.append('image', imageFile);
+
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+
+  try {
+    const pid = document.getElementById('editProductId').value;
+    const url     = editMode ? `/admin/api/products/${pid}` : '/admin/api/products';
+    const method  = editMode ? 'PUT' : 'POST';
+    const res     = await fetch(url, { method, body: formData });
+    const data    = await res.json();
+
+    if (data.success) {
+      showToast(data.message || 'Saved!', 'success');
+      closeModal();
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showToast(data.message || 'Failed to save product.', 'error');
+    }
+  } catch(e) {
+    showToast('Network error. Try again.', 'error');
+  } finally {
+    btn.textContent = '💾 Save Product'; btn.disabled = false;
+  }
+}
+
+// ── Delete Product ───────────────────────────────────────────
+async function deleteProduct(id, name) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  const res  = await fetch(`/admin/api/products/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById(`card-${id}`)?.remove();
+    showToast('Product deleted!', 'success');
+  } else { showToast(data.message || 'Delete failed.', 'error'); }
+}
+
+// ── Toggle Stock Status ──────────────────────────────────────
+async function toggleStatus(id, currentStatus) {
+  const newStatus = currentStatus === 'in_stock' ? 'out_of_stock' : 'in_stock';
+  const res  = await fetch(`/admin/api/products/${id}/status`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ status: newStatus })
+  });
+  const data = await res.json();
+  if (data.success) {
+    showToast(`Status updated to ${newStatus === 'in_stock' ? 'In Stock' : 'Out of Stock'}!`, 'success');
+    setTimeout(() => location.reload(), 800);
+  } else { showToast('Update failed.', 'error'); }
+}
+
+// ── Toast ────────────────────────────────────────────────────
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// Close modal on outside click
+document.getElementById('productModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+</script>
+<script>
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+
+// close on outside click
+document.addEventListener('click', function(e){
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.querySelector('.menu-btn');
+
+  if(sidebar.classList.contains('open')){
+    if(!sidebar.contains(e.target) && !btn.contains(e.target)){
+      sidebar.classList.remove('open');
+    }
+  }
+});
+
+// close when clicking menu link
+document.querySelectorAll('.sidebar-link').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

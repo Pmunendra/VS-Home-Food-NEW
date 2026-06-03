@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}My Orders — VS Home Food{% endblock %}
+
+{% block content %}
+<div class="page-hero small">
+    <div class="page-hero-content">
+        <h1>📦 My Orders</h1>
+        <p>Track all your orders here</p>
+    </div>
+</div>
+
+<section style="padding:60px 0;background:var(--cream);">
+    <div class="section-container" style="max-width:900px;margin:0 auto;padding:0 24px;">
+        {% if orders %}
+        <div style="display:grid;gap:20px;">
+            {% for order in orders %}
+            <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.07);border:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                    <div>
+                        <span style="font-size:18px;font-weight:700;color:var(--orange);">#{{ order.order_id }}</span>
+                        <span style="font-size:13px;color:#888;margin-left:12px;">{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                    </div>
+                    <span class="order-status-badge {{ order.status }}">
+                        {% if order.status == 'pending' %}⏳ Pending
+                        {% elif order.status == 'preparing' %}👩‍🍳 Preparing
+                        {% elif order.status == 'out_for_delivery' %}🛵 Out for Delivery
+                        {% elif order.status == 'delivered' %}✅ Delivered
+                        {% elif order.status == 'cancelled' %}❌ Cancelled
+                        {% else %}{{ order.status|title }}{% endif %}
+                    </span>
+                </div>
+                <div style="font-size:14px;color:#555;margin-bottom:16px;">
+                    {% for item in order.get_items() %}
+                    <span style="display:inline-block;background:#FDF6EE;border-radius:20px;padding:4px 12px;margin:3px;font-size:13px;">
+                        {{ item.emoji }} {{ item.name }} ×{{ item.qty }}
+                    </span>
+                    {% endfor %}
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid #F5E8D6;">
+                    <span style="color:#888;font-size:13px;">📍 {{ order.city }}</span>
+                    <span style="font-size:18px;font-weight:700;color:var(--orange);">₹{{ order.grand_total|int }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:80px 24px;">
+            <div style="font-size:64px;margin-bottom:16px;">📭</div>
+            <h2 style="margin-bottom:12px;">No orders yet!</h2>
+            <p style="color:#888;margin-bottom:32px;">Your delicious food adventure starts here.</p>
+            <a href="{{ url_for('menu') }}" class="btn-primary">Order Now 🍽️</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.order-status-badge {
+    display: inline-block; padding: 6px 14px; border-radius: 50px;
+    font-size: 12px; font-weight: 700;
+}
+.order-status-badge.pending     { background:#FEF3C7; color:#D97706; }
+.order-status-badge.preparing   { background:#DBEAFE; color:#2563EB; }
+.order-status-badge.out_for_delivery { background:#EDE9FE; color:#7C3AED; }
+.order-status-badge.delivered   { background:#D1FAE5; color:#059669; }
+.order-status-badge.cancelled   { background:#FEE2E2; color:#DC2626; }
+</style>
+{% endblock %}

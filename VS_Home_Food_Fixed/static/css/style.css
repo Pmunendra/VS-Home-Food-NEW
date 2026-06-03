@@ -1,0 +1,189 @@
+/* ========== GLOBAL STYLES ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --orange: #E8471A;
+    --orange-light: #FF6B35;
+    --orange-dark: #C93A12;
+    --cream: #FDF6EE;
+    --cream-dark: #F5E8D6;
+    --brown: #8B4513;
+    --text-dark: #1A1A1A;
+    --text-mid: #4A4A4A;
+    --text-light: #888;
+    --white: #FFFFFF;
+    --border: #E8D5C0;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+    --radius: 16px;
+    --radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+a { text-decoration: none; color: inherit; }
+/* FIX: img max-width:100% is essential — prevents images from blowing out containers */
+img { max-width: 100%; height: auto; display: block; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, textarea, select { font-family: inherit; outline: none; }
+
+/* ========== BUTTONS ========== */
+.btn-primary {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: var(--transition);
+    border: 2px solid var(--orange);
+    cursor: pointer;
+}
+.btn-primary:hover {
+    background: var(--orange-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(232,71,26,0.35);
+}
+
+.btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--orange);
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: var(--transition);
+    border: 2px solid var(--orange);
+}
+.btn-outline:hover {
+    background: var(--orange);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.full-width { width: 100%; text-align: center; display: block; }
+
+/* ========== SECTION LAYOUTS ========== */
+/* FIX: This is the ONLY base definition for section-container.
+   The old responsive.css was overriding this globally (outside media queries)
+   with width:100% and padding:0 16px, wiping out max-width on ALL screens.
+   Responsive.css now only adjusts padding/max-width inside proper media queries. */
+.section-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-label { font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+.section-title { font-size: clamp(28px, 4vw, 42px); color: var(--text-dark); }
+.section-cta { text-align: center; margin-top: 40px; }
+
+/* ========== OVERLAY ========== */
+.overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 400;
+    display: none;
+    backdrop-filter: blur(4px);
+}
+.overlay.active { display: block; }
+
+/* ========== PAGE HERO ========== */
+/* FIX: margin-top was hardcoded 80px — correct for desktop navbar height.
+   This is fine since the navbar is always 72px tall (fixed). Kept as-is. */
+.page-hero {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+    padding: 80px 24px 60px;
+    text-align: center;
+    color: white;
+    margin-top: 72px;
+}
+.page-hero.small { padding: 60px 24px 40px; }
+.page-hero h1 { font-size: clamp(28px, 4vw, 48px); }
+.page-hero p { margin-top: 12px; opacity: 0.9; font-size: 16px; }
+
+/* ========== AUTH PAGES ========== */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 60px;
+    background: var(--cream);
+}
+.auth-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 48px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-lg);
+}
+.auth-card.wide { max-width: 560px; }
+.auth-header { text-align: center; margin-bottom: 32px; }
+.auth-logo { font-size: 48px; margin-bottom: 16px; }
+.auth-header h2 { font-size: 28px; margin-bottom: 8px; }
+.auth-header p { color: var(--text-light); }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 14px; }
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px; transition: var(--transition);
+    background: var(--cream);
+}
+.form-group input:focus, .form-group textarea:focus {
+    border-color: var(--orange);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(232,71,26,0.08);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.password-input { position: relative; }
+.password-input input { padding-right: 50px; }
+.password-input button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; }
+.auth-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; gap: 8px; }
+.forgot-link { color: var(--orange); }
+.auth-divider { text-align: center; position: relative; margin: 20px 0; }
+.auth-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+.auth-divider span { background: white; padding: 0 16px; color: var(--text-light); font-size: 13px; position: relative; }
+.btn-google { border: 2px solid var(--border); padding: 14px; border-radius: 50px; font-weight: 600; transition: var(--transition); }
+.btn-google:hover { border-color: var(--orange); }
+.auth-switch { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-light); }
+.auth-switch a { color: var(--orange); font-weight: 600; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; margin-bottom: 16px; }
+
+/* ========== ORDER SUCCESS ========== */
+.success-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 24px; }
+.success-card { background: white; border-radius: var(--radius); padding: 60px; text-align: center; max-width: 600px; width: 100%; box-shadow: var(--shadow-lg); }
+.success-icon { font-size: 80px; margin-bottom: 24px; animation: bounce 1s ease; }
+.success-card h1 { font-size: 32px; margin-bottom: 16px; color: var(--orange); }
+.success-card p { color: var(--text-mid); margin-bottom: 32px; }
+.order-details { background: var(--cream); border-radius: var(--radius-sm); padding: 24px; margin-bottom: 32px; text-align: left; }
+.order-detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+.order-detail-row:last-child { border: none; }
+.success-steps { display: flex; align-items: center; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; gap: 8px; }
+.step { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; }
+.step span { font-size: 28px; }
+.step.active p { color: var(--orange); font-weight: 600; }
+.step-line { flex: 1; height: 2px; background: var(--border); margin: 0 8px; min-width: 20px; }
+.success-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* ========== BACK LINK ========== */
+.back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--orange); font-weight: 500; margin-bottom: 32px; margin-top: 100px; }
+
+/* ========== FORM GRID ========== */
+/* FIX: added min-width:0 so grid children with long content don't overflow. */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-width: 0; }
+.form-grid .full { grid-column: 1 / -1; }
+.form-grid.two-col { grid-template-columns: 1fr 1fr; }

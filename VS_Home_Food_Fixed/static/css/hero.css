@@ -1,0 +1,125 @@
+.hero {
+    min-height: 100vh; padding: 120px 24px 80px;
+    background: linear-gradient(135deg, #FDF6EE 0%, #FDECD8 50%, #FDF6EE 100%);
+    position: relative; overflow: hidden;
+}
+.hero-bg-shapes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.shape { position: absolute; border-radius: 50%; opacity: 0.15; }
+/* FIX: shapes were 500px/300px fixed — caused horizontal scroll on mobile.
+   They live inside overflow:hidden on .hero-bg-shapes so they are clipped,
+   but the containing block must also be overflow:hidden (added above). */
+.shape-1 { width: 500px; height: 500px; background: var(--orange); top: -200px; right: -100px; }
+.shape-2 { width: 300px; height: 300px; background: var(--orange-light); bottom: -100px; left: -100px; }
+.shape-3 { width: 200px; height: 200px; background: var(--brown); top: 50%; left: 40%; }
+
+/* FIX: was grid-template-columns: 1fr 1fr with no mobile override in hero.css.
+   Responsive.css now handles the column collapse. Default kept as 2-col for desktop. */
+.hero-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+.hero-badge { display: inline-block; background: rgba(232,71,26,0.1); color: var(--orange); padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 20px; }
+.hero-title { font-size: clamp(36px, 5vw, 64px); font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+.hero-highlight { color: var(--orange); position: relative; }
+.hero-subtitle { font-size: 18px; color: var(--text-mid); margin-bottom: 36px; line-height: 1.7; max-width: 480px; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+.hero-btn { font-size: 16px; }
+.hero-stats { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; }
+.stat strong { font-size: 24px; font-weight: 700; color: var(--text-dark); }
+.stat span { font-size: 13px; color: var(--text-light); }
+.stat-divider { width: 1px; height: 40px; background: var(--border); }
+
+/* Hero Visual */
+.hero-visual { display: flex; flex-direction: column; gap: 20px; align-items: flex-end; }
+/* FIX: was width: 260px fixed — overflowed on narrow screens.
+   Changed to max-width so it shrinks on small viewports. */
+.hero-food-card {
+    background: white; border-radius: var(--radius); padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: var(--shadow-md); width: 100%; max-width: 260px;
+    border: 1px solid var(--border);
+}
+.food-emoji-big { font-size: 48px; }
+.hero-card-info { display: flex; flex-direction: column; }
+.hero-card-info span { font-size: 14px; color: var(--text-mid); }
+.hero-card-info strong { font-size: 20px; color: var(--orange); font-weight: 700; }
+
+/* Hero Search */
+.hero-search { max-width: 700px; margin: 60px auto 0; position: relative; z-index: 1; }
+.hero-search-box {
+    display: flex; align-items: center; gap: 12px;
+    background: white; border-radius: 50px; padding: 8px 8px 8px 24px;
+    box-shadow: var(--shadow-lg); border: 2px solid var(--border);
+}
+.hero-search-box input { flex: 1; font-size: 16px; border: none; background: none; min-width: 0; }
+.hero-search-btn { background: var(--orange); color: white; padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; transition: var(--transition); white-space: nowrap; flex-shrink: 0; }
+.hero-search-btn:hover { background: var(--orange-dark); }
+.hero-search-tags { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+.hero-search-tags span { background: white; padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition); border: 1px solid var(--border); }
+.hero-search-tags span:hover { background: var(--orange); color: white; border-color: var(--orange); }
+
+/* Categories */
+.categories-section { padding: 80px 0; background: white; }
+/* FIX: was repeat(8, 1fr) — 8 equal columns on any screen width caused card overflow on mobile.
+   Responsive.css overrides this per breakpoint. Desktop default kept as 8. */
+.categories-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 16px; }
+.category-card {
+    background: var(--cream); border-radius: var(--radius); padding: 24px 16px;
+    text-align: center; transition: var(--transition); border: 2px solid transparent;
+    display: block; min-width: 0;
+}
+.category-card:hover { border-color: var(--orange); transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.cat-icon { font-size: 36px; margin-bottom: 10px; }
+.category-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; font-family: 'DM Sans', sans-serif; }
+.category-card span { font-size: 12px; color: var(--text-light); }
+
+/* Offer Banner */
+.offer-banner { padding: 80px 24px; background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%); overflow: hidden; }
+/* FIX: was display:flex with no flex-wrap and no mobile stack — overflowed on small screens.
+   Added flex-wrap so it wraps naturally; responsive.css sets flex-direction:column on mobile. */
+.offer-container { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.offer-badge { display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.offer-content h2 { font-size: clamp(28px, 3vw, 42px); color: white; margin-bottom: 12px; }
+.offer-content h2 span { text-decoration: underline; }
+.offer-content p { color: rgba(255,255,255,0.9); margin-bottom: 28px; font-size: 16px; }
+.offer-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.offer-actions .btn-primary { background: white; color: var(--orange); border-color: white; }
+.offer-code-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 2px dashed rgba(255,255,255,0.6); border-radius: 12px; overflow: hidden; }
+.offer-code-box span { padding: 12px 20px; color: white; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
+.offer-code-box button { background: white; color: var(--orange); padding: 12px 20px; font-weight: 700; }
+.offer-visual .offer-emoji { font-size: 100px; }
+
+/* App Section */
+.app-section { padding: 80px 24px; background: var(--cream-dark); }
+/* FIX: was grid-template-columns: 1fr auto — the 'auto' column (phone mockup) caused layout
+   to break on smaller screens. Responsive.css collapses to 1fr on mobile/tablet. */
+.app-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: center; }
+.app-badge { display: inline-block; background: rgba(232,71,26,0.1); color: var(--orange); padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.app-content h2 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 16px; }
+.app-content p { color: var(--text-mid); margin-bottom: 32px; font-size: 16px; line-height: 1.7; }
+.app-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+.app-store-btn { display: flex; align-items: center; gap: 12px; background: var(--text-dark); color: white; padding: 14px 24px; border-radius: var(--radius-sm); transition: var(--transition); }
+.app-store-btn:hover { background: var(--orange); transform: translateY(-2px); }
+.app-store-icon { font-size: 24px; }
+.app-store-btn small { display: block; font-size: 11px; opacity: 0.7; }
+.app-store-btn strong { display: block; font-size: 16px; }
+.phone-mockup { width: 220px; background: var(--text-dark); border-radius: 32px; padding: 12px; box-shadow: var(--shadow-lg); }
+.phone-screen { background: var(--cream); border-radius: 24px; padding: 20px; min-height: 350px; }
+.phone-logo { font-size: 14px; font-weight: 700; color: var(--orange); margin-bottom: 20px; }
+.phone-item { background: white; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 12px; box-shadow: var(--shadow-sm); }
+.phone-btn { background: var(--orange); color: white; border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; font-weight: 600; margin-top: 16px; }
+
+/* Testimonials */
+.testimonials-section { padding: 80px 24px; background: white; }
+/* FIX: was repeat(3,1fr) with no mobile override — 3 equal cols caused card overflow on mobile.
+   Responsive.css handles column count per breakpoint. */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.testimonial-card { background: var(--cream); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); transition: var(--transition); }
+.testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.stars { color: #F59E0B; font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-card p { color: var(--text-mid); line-height: 1.7; margin-bottom: 24px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar { width: 44px; height: 44px; background: var(--orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+.testimonial-author strong { display: block; font-weight: 600; }
+.testimonial-author span { font-size: 13px; color: var(--text-light); }
+
+.bestsellers-section { padding: 80px 24px; background: var(--cream); }
+.products-section { padding: 80px 24px; }

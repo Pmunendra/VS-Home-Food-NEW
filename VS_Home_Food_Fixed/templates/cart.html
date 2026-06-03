@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Cart — Amma Vanta{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-hero small">
+    <div class="page-hero-content">
+        <h1>Your Cart 🛒</h1>
+    </div>
+</div>
+
+<section class="cart-page-section">
+    <div class="section-container">
+        <div class="cart-layout">
+            <!-- Cart Items -->
+            <div class="cart-items-section">
+                <div id="cartPageItems">
+                    <div class="cart-empty-state" id="cartEmptyState">
+                        <span>🍽️</span>
+                        <h3>Your cart is empty</h3>
+                        <p>Looks like you haven't added anything yet!</p>
+                        <a href="{{ url_for('menu') }}" class="btn-primary">Browse Menu</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary-section" id="cartSummarySection" style="display:none;">
+                <div class="cart-summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row"><span>Subtotal</span><span id="pageSubtotal">₹0</span></div>
+                    <div class="summary-row"><span>Delivery</span><span id="pageDelivery">₹40</span></div>
+                    <div class="summary-row discount-row" id="discountRow" style="display:none;">
+                        <span>Discount</span><span id="pageDiscount" class="discount-val">-₹0</span>
+                    </div>
+                    <div class="summary-row total-row"><span>Total</span><span id="pageTotal">₹0</span></div>
+
+                    <!-- Coupon -->
+                    <div class="coupon-section">
+                        <input type="text" id="couponInput" placeholder="Enter coupon code">
+                        <button onclick="applyCoupon()" class="btn-coupon">Apply</button>
+                    </div>
+                    <div class="coupon-msg" id="couponMsg"></div>
+
+                    <a href="{{ url_for('checkout') }}" class="btn-primary full-width">Proceed to Checkout →</a>
+                    <a href="{{ url_for('menu') }}" class="btn-outline full-width">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Wait for DOM + all scripts (storage.js, cart.js) to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCartPage();
+    });
+</script>
+{% endblock %}

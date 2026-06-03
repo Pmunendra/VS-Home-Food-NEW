@@ -1,0 +1,39 @@
+.checkout-section { padding: 60px 0 80px; }
+
+/* FIX: was display:grid with grid-template-columns: 1fr 380px fixed.
+   On mobile the 380px column makes total content wider than the viewport.
+   Responsive.css collapses this to 1fr via !important on max-width:991px.
+   Base kept as desktop 2-col grid. */
+.checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+
+.checkout-card { background: white; border-radius: var(--radius); padding: 28px; margin-bottom: 24px; border: 1px solid var(--border); }
+.checkout-card h3 { font-size: 20px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--cream-dark); }
+.checkout-summary { position: sticky; top: 100px; }
+.checkout-totals { margin: 20px 0; }
+.checkout-items { margin-bottom: 8px; }
+.checkout-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--cream-dark); font-size: 14px; min-width: 0; }
+.checkout-item-name { flex: 1; min-width: 0; }
+.checkout-item-qty { color: var(--text-light); margin: 0 12px; white-space: nowrap; }
+.checkout-item-price { font-weight: 600; white-space: nowrap; }
+.payment-options { display: flex; flex-direction: column; gap: 12px; }
+.payment-option { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); transition: var(--transition); }
+.payment-option:has(input:checked) { border-color: var(--orange); background: rgba(232,71,26,0.04); }
+.payment-option input[type="radio"] { display: none; }
+.payment-option-content { display: flex; align-items: center; gap: 12px; }
+.payment-icon { font-size: 24px; }
+.payment-option-content strong { display: block; font-size: 15px; }
+.payment-option-content small { color: var(--text-light); font-size: 12px; }
+.place-order-btn { font-size: 18px; padding: 18px; }
+.secure-note { text-align: center; font-size: 13px; color: var(--text-light); margin-top: 12px; }
+
+/* FIX: summary-row needs min-width:0 to prevent text overflow in narrow columns */
+.summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--cream-dark); font-size: 15px; }
+.total-row { font-weight: 700; font-size: 20px; border: none; padding-top: 16px; margin-top: 4px; color: var(--orange); }
+.coupon-section { display: flex; gap: 8px; margin: 20px 0 8px; }
+.coupon-section input { flex: 1; padding: 10px 16px; border: 2px solid var(--border); border-radius: 50px; font-size: 14px; min-width: 0; }
+.coupon-section input:focus { border-color: var(--orange); }
+.btn-coupon { background: var(--orange); color: white; padding: 10px 18px; border-radius: 50px; font-weight: 600; font-size: 13px; transition: var(--transition); white-space: nowrap; }
+.btn-coupon:hover { background: var(--orange-dark); }
+.coupon-msg { font-size: 13px; margin-bottom: 12px; min-height: 20px; }
+.coupon-msg.success { color: #22C55E; }
+.coupon-msg.error { color: #EF4444; }

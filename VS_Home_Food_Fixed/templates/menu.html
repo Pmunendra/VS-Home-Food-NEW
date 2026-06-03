@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Menu — VS Home Food{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+    <div class="page-hero-content">
+        <h1>Our Full Menu 🍽️</h1>
+        <p>Fresh homemade food made daily with love</p>
+    </div>
+</div>
+
+<section class="menu-section">
+    <div class="section-container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" id="menuSearchInput" placeholder="Search dishes...">
+            </div>
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="biryani">🍛 Biryani</button>
+                <button class="filter-tab" data-filter="curry">🥘 Curry</button>
+                <button class="filter-tab" data-filter="pickles">🫙 Pickles</button>
+                <button class="filter-tab" data-filter="sweets">🍮 Sweets</button>
+                <button class="filter-tab" data-filter="snacks">🥐 Snacks</button>
+                <button class="filter-tab" data-filter="rice">🍚 Rice</button>
+                <button class="filter-tab" data-filter="tiffins">🫓 Tiffins</button>
+            </div>
+            <div class="filter-sort">
+                <select id="sortSelect">
+                    <option value="default">Sort By</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="menuGrid">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="noResults" style="display:none;">
+            <span>😔</span>
+            <p>No dishes found. Try a different search!</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => renderMenuPage());
+</script>
+{% endblock %}

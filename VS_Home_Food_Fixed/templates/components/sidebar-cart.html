@@ -1,0 +1,32 @@
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-sidebar-header">
+        <h3>Your Order 🛒</h3>
+        <button class="cart-close-btn" id="cartCloseBtn">&times;</button>
+    </div>
+
+    <div class="cart-items-container" id="cartItemsContainer">
+        <!-- Cart items injected by JS -->
+        <div class="cart-empty" id="cartEmpty">
+            <span class="cart-empty-icon">🍽️</span>
+            <p>Your cart is empty</p>
+            <a href="{{ url_for('menu') }}" class="btn-primary">Explore Menu</a>
+        </div>
+    </div>
+
+    <div class="cart-sidebar-footer" id="cartSidebarFooter" style="display:none;">
+        <div class="cart-subtotal">
+            <span>Subtotal</span>
+            <span id="sidebarSubtotal">₹0</span>
+        </div>
+        <div class="cart-delivery">
+            <span>Delivery</span>
+            <span id="sidebarDelivery">₹40</span>
+        </div>
+        <div class="cart-total">
+            <span>Total</span>
+            <span id="sidebarTotal">₹0</span>
+        </div>
+        <a href="{{ url_for('checkout') }}" class="btn-checkout">Proceed to Checkout →</a>
+        <a href="{{ url_for('cart') }}" class="btn-view-cart">View Full Cart</a>
+    </div>
+</div>

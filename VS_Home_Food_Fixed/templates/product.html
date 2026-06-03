@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Product — VS Home Food {% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="product-page">
+    <div class="section-container">
+        <a href="{{ url_for('menu') }}" class="back-link">← Back to Menu</a>
+        <div class="product-detail" id="productDetail">
+            <!-- Rendered by JS based on URL product_id -->
+            <div class="product-skeleton large"></div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="related-section">
+            <h3>You May Also Like</h3>
+            <div class="products-grid" id="relatedGrid"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const productId = { product_id };
+    renderProductDetail(productId);
+</script>
+{% endblock %}

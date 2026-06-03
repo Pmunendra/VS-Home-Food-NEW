@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Orders — Admin | VS Home Food</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#E8471A;--border:#E8D5C0;--shadow:0 4px 24px rgba(0,0,0,0.08);--radius:14px;}
+body{font-family:'DM Sans',sans-serif;background:#F5F5F5;color:#1A1A1A;display:flex;min-height:100vh}
+.sidebar{width:240px;background:#1A1A1A;color:white;flex-shrink:0;position:fixed;height:100vh;padding-top:20px;overflow-y:auto;}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:12px;font-size:16px;font-weight:700;color:var(--orange);}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,0.65);font-size:14px;font-weight:500;text-decoration:none;border-left:3px solid transparent;transition:all 0.2s;}
+.sidebar-link:hover,.sidebar-link.active{color:white;background:rgba(255,255,255,0.06);border-left-color:var(--orange);}
+.main{margin-left:240px;flex:1;padding:28px;}
+h1{font-size:22px;font-weight:700;margin-bottom:20px;}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px;}
+.search-input{flex:1;min-width:180px;padding:9px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;font-family:inherit;}
+.search-input:focus{outline:none;border-color:var(--orange);}
+select{padding:9px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;background:white;cursor:pointer;font-family:inherit;}
+.search-btn{padding:9px 20px;background:var(--orange);color:white;border:none;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;}
+.table-card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{background:#F9F5F0;padding:12px 18px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;white-space:nowrap;}
+td{padding:14px 18px;border-bottom:1px solid #F5F0EB;font-size:13px;vertical-align:middle;}
+tr:last-child td{border:none;}
+tr:hover td{background:#FFFAF5;}
+.order-id{font-weight:700;color:var(--orange);}
+.status-badge{display:inline-block;padding:4px 10px;border-radius:50px;font-size:11px;font-weight:700;}
+.status-badge.pending{background:#FEF3C7;color:#D97706;}
+.status-badge.preparing{background:#DBEAFE;color:#2563EB;}
+.status-badge.out_for_delivery{background:#EDE9FE;color:#7C3AED;}
+.status-badge.delivered{background:#D1FAE5;color:#059669;}
+.status-badge.cancelled{background:#FEE2E2;color:#DC2626;}
+.btn{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:none;}
+.btn-orange{background:var(--orange);color:white;}
+.btn-orange:hover{background:#C93A12;}
+.empty{text-align:center;padding:60px;color:#888;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:var(--radius);padding:28px;width:500px;max-width:90vw;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:14px;right:18px;font-size:22px;cursor:pointer;color:#888;background:none;border:none;}
+.toast{position:fixed;bottom:20px;right:20px;background:#1A1A1A;color:white;padding:12px 22px;border-radius:50px;font-size:13px;font-weight:600;opacity:0;transform:translateY(20px);transition:all 0.3s;z-index:9999;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.success{background:#059669;}
+/* =========================
+   MOBILE RESPONSIVE FIX
+========================= */
+
+@media (max-width: 768px){
+
+    body{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+        padding-top:10px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:15px;
+    }
+
+    h1{
+        font-size:20px;
+    }
+
+    .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-input,
+    select,
+    .search-btn{
+        width:100%;
+    }
+
+    table{
+        min-width:900px;
+    }
+
+    .table-card{
+        overflow-x:auto;
+    }
+
+    .modal{
+        width:95%;
+        padding:20px;
+    }
+
+    td,th{
+        padding:10px;
+        font-size:12px;
+    }
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#F5F5F5;
+  color:#1A1A1A;
+  display:flex;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+.main{
+  margin-left:240px;
+  flex:1;
+  padding:28px;
+  width:calc(100% - 240px);
+}
+
+@media (max-width: 768px){
+  .main{
+    margin-left:0;
+    width:100%;
+    padding:14px;
+  }
+}
+@media (max-width: 768px){
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:transform 0.3s ease;
+    z-index:1000;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+@media (max-width:768px){
+
+  .toolbar{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+
+  .search-input,
+  select,
+  .search-btn{
+    width:100%;
+  }
+}
+.menu-btn{
+    display:none;
+    font-size:20px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    margin-right:10px;
+}
+
+/* mobile lo matrame show */
+@media (max-width:768px){
+    .menu-btn{
+        display:block;
+    }
+
+    .topbar{
+        justify-content:space-between;
+    }
+}
+@media (max-width:768px){
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:0.3s ease;
+    z-index:999;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+    padding:14px;
+  }
+
+  .menu-btn{
+    display:block;
+    font-size:22px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    margin-bottom:10px;
+  }
+
+  table{
+    min-width:900px;
+  }
+
+  .table-card{
+    overflow-x:auto;
+  }
+}
+@media (max-width:768px){
+
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    transform:translateX(-100%);
+    transition:0.3s ease;
+    z-index:999;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .menu-btn{
+    display:block;
+    font-size:22px;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebar-logo">
+    <img src="{{ url_for('static', filename='images/logo.png') }}"
+         class="sidebar-logo-img"
+         width="36" height="36"
+         alt="VS Home Food">
+
+    <div class="sidebar-logo-text">
+        <span class="logo-name">VS Home Food</span>
+        <span class="logo-sub">Admin Panel</span>
+    </div>
+</div>
+    <a href="/admin/dashboard" class="sidebar-link">📊 Dashboard</a>
+    <a href="/admin/orders"    class="sidebar-link active">📦 All Orders</a>
+    <a href="/admin/users"     class="sidebar-link">👥 Users</a>
+    <a href="/"                class="sidebar-link">🏠 View Website</a>
+    <a href="/admin/logout"    class="sidebar-link" style="color:#EF4444;">🚪 Logout</a>
+</div>
+
+<div class="main">
+    <div style="display:flex;align-items:center;gap:10px;">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+</div>
+    
+    <h1>📦 All Orders</h1>
+
+    <form method="GET" action="/admin/orders">
+        <div class="toolbar">
+            <input type="text" name="q" class="search-input" placeholder="Search order ID, name, phone..." value="{{ search }}">
+            <select name="status">
+                <option value="">All Statuses</option>
+                <option value="pending"           {% if status_filter=='pending'           %}selected{% endif %}>⏳ Pending</option>
+                <option value="preparing"         {% if status_filter=='preparing'         %}selected{% endif %}>👩‍🍳 Preparing</option>
+                <option value="out_for_delivery"  {% if status_filter=='out_for_delivery'  %}selected{% endif %}>🛵 Out for Delivery</option>
+                <option value="delivered"         {% if status_filter=='delivered'         %}selected{% endif %}>✅ Delivered</option>
+                <option value="cancelled"         {% if status_filter=='cancelled'         %}selected{% endif %}>❌ Cancelled</option>
+            </select>
+            <input type="date" name="date" value="{{ date_filter }}" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:50px;font-size:14px;font-family:inherit;">
+            <button type="submit" class="search-btn">🔍 Search</button>
+            <a href="/admin/orders" style="padding:9px 16px;font-size:13px;color:#888;border:1.5px solid var(--border);border-radius:50px;text-decoration:none;">Clear</a>
+        </div>
+    </form>
+
+    <div class="table-card">
+        <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for o in orders %}
+            <tr>
+                <td class="order-id">#{{ o.order_id }}</td>
+                <td>
+                    <div style="font-weight:600;">{{ o.customer_name }}</div>
+                    <div style="font-size:11px;color:#888;">{{ o.customer_phone }}</div>
+                    <div style="font-size:11px;color:#888;">{{ o.customer_email }}</div>
+                </td>
+                <td style="max-width:160px;">
+                    {% for item in o.get_items() %}
+                    <div style="font-size:11px;white-space:nowrap;">{{ item.emoji }} {{ item.name }} ×{{ item.qty }}</div>
+                    {% endfor %}
+                </td>
+                <td style="font-weight:700;color:var(--orange);white-space:nowrap;">₹{{ o.grand_total|int }}</td>
+                <td style="font-size:12px;">{{ o.payment_method }}</td>
+                <td><span class="status-badge {{ o.status }}">{{ o.status|replace('_',' ')|title }}</span></td>
+                <td style="font-size:12px;color:#888;white-space:nowrap;">{{ o.created_at.strftime('%d %b %Y') }}<br>{{ o.created_at.strftime('%I:%M %p') }}</td>
+                <td><button class="btn btn-orange" onclick="openModal('{{ o.order_id }}','{{ o.status }}')">Update</button></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="empty">No orders found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h3 style="margin-bottom:16px;">Update Status — <span id="mId"></span></h3>
+        <select id="mStatus">
+            <option value="pending">⏳ Pending</option>
+            <option value="preparing">👩‍🍳 Preparing</option>
+            <option value="out_for_delivery">🛵 Out for Delivery</option>
+            <option value="delivered">✅ Delivered</option>
+            <option value="cancelled">❌ Cancelled</option>
+        </select>
+        <button onclick="saveStatus()" style="width:100%;padding:12px;background:var(--orange);color:white;border:none;border-radius:50px;font-weight:700;cursor:pointer;">Save Changes</button>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+</script>
+<script>
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+document.addEventListener('click', function(e){
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.querySelector('.menu-btn');
+
+  // if sidebar open and click outside
+  if(sidebar.classList.contains('open')){
+
+    if(!sidebar.contains(e.target) && !btn.contains(e.target)){
+      sidebar.classList.remove('open');
+    }
+
+  }
+});
+document.querySelectorAll('.sidebar-link').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+
+<script>
+let currentOrder = null;
+function openModal(id, status) {
+    currentOrder = id;
+    document.getElementById('mId').textContent = '#' + id;
+    document.getElementById('mStatus').value   = status;
+    document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+async function saveStatus() {
+    const status = document.getElementById('mStatus').value;
+    const res    = await fetch(`/admin/api/orders/${currentOrder}/status`, {
+        method:'PUT', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({status})
+    });
+    const data = await res.json();
+    if (data.success) { toast('✅ Updated!', true); closeModal(); setTimeout(() => location.reload(), 1200); }
+    else toast('❌ Failed');
+}
+function toast(msg, ok) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className   = 'toast show' + (ok ? ' success' : '');
+    setTimeout(() => el.className = 'toast', 2500);
+}
+</script>
+</body>
+</html>

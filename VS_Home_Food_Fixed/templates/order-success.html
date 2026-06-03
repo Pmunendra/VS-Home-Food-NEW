@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Order Placed! — VS Home Food {% endblock %}
+
+{% block content %}
+<div class="success-page">
+    <div class="success-card">
+        <div class="success-icon">🎉</div>
+        <h1>Order Placed Successfully!</h1>
+        <p>Thank you for ordering from VS Home Food. Your fresh homemade food is being prepared with love! An email confirmation has been sent to your inbox.</p>
+
+        <div class="order-details">
+            <div class="order-detail-row">
+                <span>Order ID</span>
+                <strong id="orderId">#—</strong>
+            </div>
+            <div class="order-detail-row">
+                <span>Total Amount</span>
+                <strong id="orderTotal">—</strong>
+            </div>
+            <div class="order-detail-row">
+                <span>Estimated Delivery</span>
+                <strong>45–60 minutes</strong>
+            </div>
+            <div class="order-detail-row">
+                <span>Payment</span>
+                <strong id="paymentMethod">—</strong>
+            </div>
+        </div>
+
+        <div class="success-steps">
+            <div class="step active"><span>✅</span><p>Order Confirmed</p></div>
+            <div class="step-line"></div>
+            <div class="step"><span>👩‍🍳</span><p>Being Prepared</p></div>
+            <div class="step-line"></div>
+            <div class="step"><span>🛵</span><p>Out for Delivery</p></div>
+            <div class="step-line"></div>
+            <div class="step"><span>🏠</span><p>Delivered</p></div>
+        </div>
+
+        {% if logged_in %}
+        <p style="font-size:14px;color:#888;margin-bottom:24px;">Track your order under <a href="{{ url_for('my_orders') }}" style="color:var(--orange);font-weight:600;">My Orders</a></p>
+        {% endif %}
+
+        <div class="success-actions">
+            <a href="{{ url_for('home') }}" class="btn-primary">Back to Home</a>
+            <a href="{{ url_for('menu') }}" class="btn-outline">Order Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const orderId    = sessionStorage.getItem('lastOrderId');
+    const orderTotal = sessionStorage.getItem('lastOrderTotal');
+    const payment    = sessionStorage.getItem('lastPaymentMethod');
+
+    if (orderId)    document.getElementById('orderId').textContent    = '#' + orderId;
+    if (orderTotal) document.getElementById('orderTotal').textContent = '₹' + parseInt(orderTotal);
+    if (payment)    document.getElementById('paymentMethod').textContent = payment.toUpperCase();
+
+    sessionStorage.removeItem('lastOrderId');
+    sessionStorage.removeItem('lastOrderTotal');
+    sessionStorage.removeItem('lastPaymentMethod');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,174 @@
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <a href="{{ url_for('home') }}" class="nav-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="VS Home Foods" class="nav-logo-img">
+             <div class="logo-text">
+                <span class="logo-main"> VS Home Foods </span>
+                <span class="logo-sub">Homemade with Love</span>
+            </div>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <ul class="nav-links" id="navLinks">
+            <li><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+            <li><a href="{{ url_for('menu') }}" class="nav-link">Menu</a></li>
+            <li><a href="/#categories" class="nav-link">Categories</a></li>
+            <li><a href="/#offers" class="nav-link">Offers</a></li>
+            <li><a href="/#contact" class="nav-link">Contact</a></li>
+        </ul>
+
+        <!-- Nav Actions -->
+        <div class="nav-actions">
+            <button class="nav-search-btn" id="navSearchBtn" aria-label="Search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </button>
+
+            <!-- Account Area -->
+            <div id="navAccountArea" style="display:flex;align-items:center;gap:8px;position:relative;">
+                {% if logged_in %}
+                <div class="user-dropdown-wrap" id="userDropdownWrap">
+                    <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()">
+                        <span class="user-avatar-small">{{ session_user_name[0]|upper if session_user_name else 'U' }}</span>
+                        <span class="user-greeting-text">Hi, {{ session_user_name }}</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-avatar">{{ session_user_name[0]|upper if session_user_name else 'U' }}</div>
+                            <div>
+                                <div class="dropdown-name">{{ session_user_name }}</div>
+                                <div class="dropdown-email">{{ session_user_email }}</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('my_orders') }}" class="dropdown-item"><span>📦</span> My Orders</a>
+                        <a href="{{ url_for('profile') }}" class="dropdown-item"><span>👤</span> My Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" onclick="logoutUser()"><span>🚪</span> Logout</button>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-account-btn" aria-label="Login">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </a>
+                {% endif %}
+            </div>
+
+            <button class="nav-cart-btn" id="cartToggleBtn" aria-label="Cart">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Bar Dropdown -->
+    <div class="nav-search-bar" id="navSearchBar">
+        <div class="search-container">
+            <input type="text" id="navSearchInput" placeholder="Search for biryanis, curries, sweets..." autocomplete="off">
+            <button class="search-submit-btn">Search</button>
+        </div>
+    </div>
+</nav>
+
+<style>
+/* ── Logo Image ── */
+/* FIX: was height:52px with no max-width — on very small screens the logo
+   could push nav items off screen. Added max-height and max-width guard. */
+.nav-logo-img {
+    height: 52px;
+    max-height: 52px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+}
+.nav-logo:hover .nav-logo-img {
+    transform: scale(1.05);
+}
+
+/* ── Responsive logo shrink on mobile ── */
+@media (max-width: 575px) {
+    .nav-logo-img {
+        height: 38px;
+        max-height: 38px;
+        max-width: 90px;
+    }
+    .logo-main { font-size: 16px !important; }
+    .logo-sub  { display: none; }
+}
+
+/* ── User Dropdown ── */
+.user-dropdown-wrap { position: relative; }
+.user-greeting-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(232,71,26,0.1); border: 1.5px solid rgba(232,71,26,0.3);
+    border-radius: 50px; padding: 6px 14px 6px 6px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--orange, #E8471A); transition: all 0.2s; white-space: nowrap;
+}
+.user-greeting-btn:hover { background: rgba(232,71,26,0.18); }
+.user-avatar-small {
+    width: 26px; height: 26px; background: var(--orange, #E8471A); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+/* FIX: on very small screens the greeting text overflowed. Hide text on mobile,
+   show only avatar. */
+@media (max-width: 575px) {
+    .user-greeting-text { display: none; }
+    .user-greeting-btn { padding: 6px; }
+}
+.user-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    background: #fff; border-radius: 16px; min-width: 230px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: 1px solid #F5E8D6;
+    overflow: hidden; opacity: 0; pointer-events: none;
+    transform: translateY(-8px); transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+    z-index: 1000;
+}
+.user-dropdown.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.dropdown-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; background: #FDF6EE;
+}
+.dropdown-avatar {
+    width: 38px; height: 38px; background: var(--orange, #E8471A); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+.dropdown-name  { font-size: 14px; font-weight: 600; color: #1A1A1A; }
+.dropdown-email { font-size: 11px; color: #888; }
+.dropdown-divider { height: 1px; background: #F5E8D6; }
+.dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px; font-size: 14px; font-weight: 500;
+    color: #4A4A4A; text-decoration: none; transition: background 0.15s;
+    cursor: pointer; width: 100%; text-align: left; border: none;
+    background: none; font-family: inherit;
+}
+.dropdown-item:hover { background: #FDF6EE; color: #E8471A; }
+.logout-item { color: #DC2626 !important; }
+.logout-item:hover { background: #FEE2E2 !important; }
+</style>
+
+<script>
+function toggleUserDropdown() {
+    document.getElementById('userDropdown')?.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('userDropdownWrap');
+    if (wrap && !wrap.contains(e.target)) {
+        document.getElementById('userDropdown')?.classList.remove('open');
+    }
+});
+async function logoutUser() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+}
+</script>

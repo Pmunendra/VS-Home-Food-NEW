@@ -1,0 +1,45 @@
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="VS Home Foods" style="height:42px;width:auto;object-fit:contain;">
+        <button id="mobileClose" aria-label="Close">✕</button>
+    </div>
+    {% if logged_in %}
+    <div class="mobile-user-bar">
+        <div class="mobile-user-avatar">{{ session_user_name[0]|upper if session_user_name else 'U' }}</div>
+        <div>
+            <div style="font-weight:600;font-size:14px;">Hi, {{ session_user_name }}!</div>
+            <div style="font-size:11px;color:#888;">{{ session_user_email }}</div>
+        </div>
+    </div>
+    {% endif %}
+    <ul class="mobile-nav-links">
+        <li><a href="{{ url_for('home') }}"      class="mobile-nav-link">🏠 Home</a></li>
+        <li><a href="{{ url_for('menu') }}"      class="mobile-nav-link">🍽️ Menu</a></li>
+        <li><a href="/#categories"               class="mobile-nav-link">📂 Categories</a></li>
+        <li><a href="/#offers"                   class="mobile-nav-link">🎉 Offers</a></li>
+        <li><a href="/#contact"                  class="mobile-nav-link">📞 Contact</a></li>
+        {% if logged_in %}
+        <li><a href="{{ url_for('my_orders') }}" class="mobile-nav-link">📦 My Orders</a></li>
+        <li><a href="{{ url_for('profile') }}"   class="mobile-nav-link">👤 My Profile</a></li>
+        <li><button onclick="logoutUser()" class="mobile-nav-link mobile-logout-btn">🚪 Logout</button></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}"     class="mobile-nav-link">🔑 Login</a></li>
+        <li><a href="{{ url_for('register') }}"  class="mobile-nav-link">✨ Register</a></li>
+        {% endif %}
+    </ul>
+</div>
+<style>
+.mobile-user-bar {
+    display:flex;align-items:center;gap:12px;
+    padding:16px 24px;background:#FDF6EE;border-bottom:1px solid #F5E8D6;
+}
+.mobile-user-avatar {
+    width:38px;height:38px;background:var(--orange,#E8471A);
+    color:#fff;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;
+}
+.mobile-logout-btn {
+    width:100%;text-align:left;background:none;border:none;
+    font-family:inherit;color:#DC2626!important;cursor:pointer;
+}
+</style>

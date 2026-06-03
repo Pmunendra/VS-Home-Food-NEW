@@ -1,0 +1,29 @@
+.footer { background: var(--text-dark); color: white; }
+
+/* FIX: was grid-template-columns: 2fr 1fr 1fr 1.5fr hardcoded — on mobile this creates
+   4 tiny columns that overflow. Responsive.css overrides per breakpoint.
+   The old responsive.css targeted .footer-grid (wrong class — no such class in HTML).
+   HTML uses .footer-top, so none of those responsive rules ever applied.
+   Now aligned: CSS class matches HTML class (.footer-top). */
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 48px; max-width: 1200px; margin: 0 auto; padding: 64px 24px; }
+
+.footer-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.footer-logo span { font-size: 36px; }
+.footer-logo .logo-main { color: var(--orange); font-size: 22px; }
+.footer-logo .logo-sub { color: rgba(255,255,255,0.5); font-size: 12px; }
+.footer-tagline { color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 24px; font-size: 15px; }
+.footer-social { display: flex; gap: 12px; flex-wrap: wrap; }
+.footer-social a { font-size: 22px; transition: transform 0.2s; display: block; }
+.footer-social a:hover { transform: scale(1.2); }
+.footer-links-group h4 { font-size: 15px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 20px; color: white; }
+.footer-links-group ul { display: flex; flex-direction: column; gap: 10px; }
+.footer-links-group li, .footer-links-group a { font-size: 14px; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+.footer-links-group a:hover { color: var(--orange); }
+
+/* FIX: footer-bottom was display:flex with no flex-wrap — on narrow screens the two sides
+   could overflow. Added flex-wrap:wrap and gap so they stack on small screens. */
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding: 24px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p { font-size: 14px; color: rgba(255,255,255,0.5); }
+.footer-bottom-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-bottom-links a { font-size: 13px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+.footer-bottom-links a:hover { color: var(--orange); }

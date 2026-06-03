@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found — Amma Vanta{% endblock %}
+{% block content %}
+<div style="text-align:center;padding:120px 24px;background:var(--cream);">
+    <div style="font-size:80px;margin-bottom:16px;">🍱</div>
+    <h1 style="font-size:48px;margin-bottom:16px;">404</h1>
+    <p style="font-size:20px;color:#888;margin-bottom:32px;">Oops! This page went missing like last night's biryani.</p>
+    <a href="{{ url_for('home') }}" class="btn-primary">Back to Home →</a>
+</div>
+{% endblock %}
